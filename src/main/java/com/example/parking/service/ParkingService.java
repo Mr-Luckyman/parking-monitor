@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -70,5 +71,12 @@ public class ParkingService {
         repository.freeSpot(session.getSpotNumber());
 
         return new ExitResponse(session.getId(), exitTime, durationMinutes, amountDue);
+    }
+
+    public List<Integer> getFreeSpotsByZone(String zone) {
+        return repository.findAllSpots().stream()
+                .filter(spot -> spot.zone().equals(zone) && !spot.isOccupied())
+                .map(ParkingSpot::spotNumber)
+                .toList();
     }
 }
